@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'constants.dart';
 import 'expense_category.dart';
+import 'bank_api.dart';
 
 void main() => runApp(ExpenseTrackerApp());
 
@@ -39,6 +40,8 @@ class ExpenseTrackerViewModel extends ChangeNotifier {
 
   ExpenseTrackerViewModel() {
     fetchTransactions();
+    fetchKaspiTransactions();
+    fetchHalikTransactions(); 
   }
 
   // Fetch transactions from API
@@ -144,7 +147,7 @@ class ExpenseTrackerApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Expense Tracker',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.indigo,
           fontFamily: 'Roboto',
         ),
         initialRoute: '/',
@@ -173,10 +176,12 @@ class ExpenseTrackerHomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Balance section
+                            // Balance section
+              // В ExpenseTrackerHomePage:
+              // Обновление стиля для текста
               Text(
                 'Balance',
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.indigo),
               ),
               Text(
                 '₸ ${viewModel.balance.toStringAsFixed(2)}',
@@ -200,7 +205,7 @@ class ExpenseTrackerHomePage extends StatelessWidget {
                   ),
                   // Generate dropdown items for expense categories
                   for (var category in ExpenseCategory.expenseCategories)
-                    DropdownMenuItem(
+                    DropdownMenuItem<ExpenseCategory>(
                       value: category,
                       child: Text(category.name),
                     ),
@@ -429,55 +434,37 @@ class AnalyticsPage extends StatelessWidget {
     // Calculate net balance
     double netBalance = totalIncome - totalExpenses;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Analytics'),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Text(
-                'Total Expenses: ₸ ${totalExpenses.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 20.0),
-              ),
-              SizedBox(height: 10.0),
-              Text(
-                'Total Income: ₸ ${totalIncome.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 20.0),
-              ),
-              SizedBox(height: 10.0),
-              Text(
-                'Net Balance: ₸ ${netBalance.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 20.0),
-              ),
-              SizedBox(height: 20.0),
-              // Additional analytics widgets can be added here
-            ],
+return Scaffold(
+  appBar: AppBar(
+    title: Text('Analytics'),
+  ),
+  backgroundColor: Colors.grey[200], // Изменение фона
+  body: SingleChildScrollView(
+    child: Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Total Expenses: ₸ ${totalExpenses.toStringAsFixed(2)}',
+            style: TextStyle(fontSize: 20.0, color: Colors.indigo),
           ),
-        ),
+          SizedBox(height: 10.0),
+          Text(
+            'Total Income: ₸ ${totalIncome.toStringAsFixed(2)}',
+            style: TextStyle(fontSize: 20.0, color: Colors.indigo),
+          ),
+          SizedBox(height: 10.0),
+          Text(
+            'Net Balance: ₸ ${netBalance.toStringAsFixed(2)}',
+            style: TextStyle(fontSize: 20.0, color: Colors.indigo),
+          ),
+          SizedBox(height: 20.0),
+          // Additional analytics widgets can be added here
+        ],
       ),
-    );
-  }
+    ),
+  ),
+);
 }
-
-const String apiUrl = 'https://jsonplaceholder.typicode.com/posts';
-const String analyticsApiUrl = 'https://api.example.com/analytics';
-
-
-// Expense category class
-class ExpenseCategory {
-  final String name;
-
-  const ExpenseCategory(this.name);
-
-  // List of expense categories
-  static const List<ExpenseCategory> expenseCategories = [
-    ExpenseCategory('Food'),
-    ExpenseCategory('Transport'),
-    ExpenseCategory('Entertainment'),
-    ExpenseCategory('Utilities'),
-  ];
 }
